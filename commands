@@ -1,0 +1,23 @@
+#!/bin/bash
+set -eo pipefail
+
+[[ $DOKKU_TRACE ]] && set -x
+
+case "$1" in
+  shell:add)
+    APP="$2"; IMAGE="dokku/$APP"; CACHE_DIR="$DOKKU_ROOT/$APP/cache"
+    path="$3"; pos="$4"
+    if [[ -z "$4" ]]; then
+      echo "Usage: $0 add path position"
+      exit 1
+    fi
+    if [[ ! -e "$3" ]]; then
+      echo "$3: No such file or directory"
+      exit 1
+    fi
+    id=$(tar cf - "$path" | docker run -i -a stdin -v $CACHE_DIR:/cache $IMAGE /bin/bash -c "mkdir -p $pos && tar -xC $pos")
+    test $(docker wait $id) -eq 0
+    docker commit $id $IMAGE > /dev/null
+    ;;
+
+esac
