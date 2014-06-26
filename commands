@@ -8,7 +8,7 @@ case "$1" in
     APP="$2"; IMAGE="dokku/$APP"; CACHE_DIR="$DOKKU_ROOT/$APP/cache"
     pos="$3"
     if [[ -z "$3" ]]; then
-      echo "Usage: tar cf - file(s) | (ssh) dokku add path position"
+      echo "Usage: tar cf - file(s) | (ssh) dokku shell:put position"
       exit 1
     fi
     id=$(cat | docker run -i -a stdin -v $CACHE_DIR:/cache $IMAGE /bin/bash -c "mkdir -p $pos && tar -xC $pos")
