@@ -3,5 +3,5 @@ Shell plugin for dokku
 
 ##Commands
 
-     add <app> path position  add file at `path` to `position` and save the image
+    tar cf - file(s) | (dokku|ssh dokku) shell:put <app> position  # put file to `position` and save the image
 
