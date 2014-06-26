@@ -8,12 +8,18 @@ case "$1" in
     APP="$2"; IMAGE="dokku/$APP"; CACHE_DIR="$DOKKU_ROOT/$APP/cache"
     pos="$3"
     if [[ -z "$3" ]]; then
-      echo "Usage: tar cf - file(s) | (ssh) dokku shell:put position"
+      echo "Usage: tar cf - file(s) | (ssh) dokku shell:put <app> <position>"
       exit 1
     fi
     id=$(cat | docker run -i -a stdin -v $CACHE_DIR:/cache $IMAGE /bin/bash -c "mkdir -p $pos && tar -xC $pos")
     test $(docker wait $id) -eq 0
     docker commit $id $IMAGE > /dev/null
+    ;;
+
+  help)
+    cat && cat<<EOF
+    shell:put <app> <position> put tared files via stdin at position
+EOF
     ;;
 
 esac
